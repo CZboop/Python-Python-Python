@@ -23,21 +23,20 @@ def get_coordinate(direction, word, grid_size):
     Get a random coordinate but only if viable based on direction and word length
     '''
     if direction == "across":
-        row_range = (0, grid_size - len(word) - 1)
-        col_range = (0, grid_size)
+        row_range = (0, grid_size - 1)
+        col_range = (0, grid_size - len(word))
     elif direction == "down":
-        row_range = (0, grid_size)
-        col_range = (0, grid_size - len(word) - 1)
+        row_range = (0, grid_size - len(word))
+        col_range = (0, grid_size - 1)
     elif direction == "diagonal_up":
-        row_range = (0, grid_size - len(word) - 1)
-        col_range = (grid_size - len(word), grid_size)
+        row_range = (len(word) - 1, grid_size - 1)
+        col_range = (0, grid_size - len(word))
     elif direction == "diagonal_down":
-        row_range = (0, grid_size - len(word) - 1)
-        col_range = (0, grid_size - len(word) - 1)
-
-    random_column = random.randrange(col_range[0], col_range[1])
-    random_row = random.randrange(row_range[0], row_range[1])
-    return random_column, random_row
+        row_range = (0, grid_size - len(word))
+        col_range = (0, grid_size - len(word))
+    random_col = random.randrange(col_range[0], col_range[1] + 1)
+    random_row = random.randrange(row_range[0], row_range[1] + 1)
+    return random_row, random_col
 
 def place_word(location, direction, word, grid):
     '''
@@ -47,8 +46,6 @@ def place_word(location, direction, word, grid):
     column = location[1]
     for letter in word:
         element_at_loc = grid[row][column]
-        print(element_at_loc)
-        print(row, column)
         grid[row][column] = letter
 
         # increment row/column based on direction
@@ -72,7 +69,6 @@ def is_overlap_invalid(location, direction, word, grid):
     column = location[1]
     for letter in word:
         element_at_location = grid[location[0]][location[1]]
-        print(element_at_location)
         if element_at_location != "" and element_at_location != letter:
             return True
         else:
@@ -128,7 +124,6 @@ def run():
             direction = random.choice(DIRECTIONS)
             coordinate = get_coordinate(direction, word, GRID_SIZE)
             invalid_location = is_overlap_invalid(coordinate, direction, word, grid)
-            print(invalid_location)
         grid = place_word(coordinate, direction, word, grid)
     filled_grid = fill_grid(grid)
     wordsearch = print_wordsearch(filled_grid)
